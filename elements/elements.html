@@ -16827,24 +16827,19 @@ module.exports = Array.isArray || function (arr) {
     });
 
     page('/', function() {
-      app.route = 'home';
+      app.route = 'geospatial';
     });
 
     page(app.baseUrl, function() {
-      app.route = 'home';
+      app.route = 'geospatial';
     });
 
-    page('/users', function() {
-      app.route = 'users';
+    page('/keymetrics', function() {
+      app.route = 'keymetrics';
     });
 
-    page('/users/:name', function(data) {
-      app.route = 'user-info';
-      app.params = data.params;
-    });
-
-    page('/contact', function() {
-      app.route = 'contact';
+    page('/data', function() {
+      app.route = 'data';
     });
 
     // 404
@@ -16880,7 +16875,7 @@ module.exports = Array.isArray || function (arr) {
     --secondary-text-color: #737373;
     --disabled-text-color: #9b9b9b;
     --divider-color: #dbdbdb;
-    --primary-color: #3f51b5;
+    --primary-color: #2D3E69;
     --light-primary-color: #c5cae9;
     --dark-primary-color: #303f9f;
     --accent-color: #ff4081;
@@ -16928,7 +16923,6 @@ module.exports = Array.isArray || function (arr) {
     --paper-menu-selected-item: {
       color: var(--primary-color);
     }
-
     --paper-menu-focused-item-after: {
       background: var(--primary-color);
     }
@@ -16990,7 +16984,7 @@ module.exports = Array.isArray || function (arr) {
 
   /* Height of the scroll area */
   .content {
-    height: 900px;
+    /*height: 900px;*/
   }
 
   section[data-route="home"] paper-material {
@@ -17157,23 +17151,161 @@ module.exports = Array.isArray || function (arr) {
     })();
   </script>
 </dom-module>
-<dom-module id="my-list" assetpath="my-list/">
+<dom-module id="d3-pie" assetpath="my-element/">
+    <template>
+         <style>
+            :host {
+                display: block;
+                /*height: 400px;*/
+                border-width: 3px;
+                border-style: solid;
+                border-color: red;
+            }
+            text {
+              fill: white;
+            }
+            svg {
+              /*float: right;*/
+              margin: 0 0px 0 0;
+            }
+            .arc path {
+              stroke: #fff;
+            }
+        </style>
+        
+        <svg id="svg" viewBox="0 0 500 500" perserveaspectratio="xMinYMid"></svg>
+    </template>
+    <script>
+        Polymer({
+            is: 'd3-pie',
+            behaviors: [
+              Polymer.IronResizableBehavior
+            ],
+            listeners: {
+              'iron-resize': '_onIronResize'
+            },
+            properties: {
+                dataName:{
+                    type: String,
+                    //value: 'Welcome!',
+                    //notify: true
+                },
+                color:{
+                    type: Object,
+                },
+                arc:{
+                    type: Object,
+                },
+                pie:{
+                    type: Object,
+                },
+                svg:{
+                    type: Object,
+                },
+                  x: {
+                    type: Number,
+                    value: 0
+                  },
+                  y: {
+                    type: Number,
+                    value: 0
+                  }
+            },
+            
+            ready: function() {
+                //console.log(this.dataName);
+                //////////////////////////
+                this.setD3(500, 500);              
+            },
+            
+            attached: function(){
+                this.async(this.notifyResize, 1);
+                /////////////////
+                var me = this;
+                me.url="../../data/"+this.dataName;    
+                d3.csv(me.url, function (error, data) {
+                    me.data = data;
+                    me.drawChart();
+                });     
+            },
+            
+            setD3: function(width, height){
+                //var width = 500,
+                 // height = 500,
+                 var radius = Math.min(width, height) / 2;
+
+              this.color = d3.scale.ordinal()
+                  .range(["green", "orange", "blue", "red"]);
+
+              this.arc = d3.svg.arc()
+                  .outerRadius(radius - 10)
+                  .innerRadius(0);
+
+              this.pie = d3.layout.pie()
+                  .sort(null)
+                  .value(function(d) { return d.amount; });
+
+              this.svg = d3.select(this.$.svg)
+                  //.attr("width", width)
+                  //.attr("height", height)
+                .append("g")
+                  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");      
+            },
+            
+            drawChart: function () {
+              var me = this;
+
+              me.data.forEach(function(d) {
+                d.amount = +d.amount;
+              });
+
+              me.g = me.svg.selectAll(".arc")
+                  .data(me.pie(me.data))
+                .enter().append("g")
+                  .attr("class", "arc");
+
+              me.g.append("path")
+                  .attr("d", me.arc)
+                  .style("fill", function(d) { return me.color(d.data.type); });
+
+              me.g.append("text")
+                  .attr("transform", function(d) { return "translate(" + me.arc.centroid(d) + ")"; })
+                  .attr("dy", ".35em")
+                  .style("text-anchor", "middle")
+                  .text(function(d) { return d.data.type; });
+            },
+            /*
+            urlChanged: function (oldValue, newValue) {
+              if(newValue && oldValue) {
+                this.getData();
+              }
+            }
+            */
+            get parent() {
+              if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+                return this.parentNode.host;
+              }
+              return this.parentNode;
+            },
+            _onIronResize: function() {
+              this.x = Math.floor(this.parent.offsetWidth );
+              this.y = Math.floor(this.parent.offsetHeight );
+              //console.log("x="+x+", y="+y);    
+              this.svg.attr("width", this.x);
+              this.svg.attr("height", this.x);
+            }
+        });
+    </script>
+</dom-module><dom-module id="d3-wrapper" assetpath="my-element/">
   <template>
-    <style>
+    <style include="shared-styles">
       :host {
         display: block;
-      }
-
-      span {
-        @apply(--paper-font-body1);
+        width:100%;  
       }
     </style>
-
-    <ul>
-      <template is="dom-repeat" items="{{items}}">
-        <li><span>{{item}}</span></li>
-      </template>
-    </ul>
+    
+    <d3-pie data-name="[[dataName]]"></d3-pie>
   </template>
 
   <script>
@@ -17181,25 +17313,13 @@ module.exports = Array.isArray || function (arr) {
       'use strict';
 
       Polymer({
-        is: 'my-list',
+        is: 'd3-wrapper',
 
         properties: {
-          items: {
-            type: Array,
-            notify: true,
-          }
         },
-
-        ready: function() {
-          this.items = [
-            'Responsive Web App boilerplate',
-            'Iron Elements and Paper Elements',
-            'End-to-end Build Tooling (including Vulcanize)',
-            'Unit testing with Web Component Tester',
-            'Routing with Page.js',
-            'Offline support with the Platinum Service Worker Elements'
-          ];
-        }
+        behaviors: [
+            Polymer.IronResizableBehavior
+        ]  
       });
     })();
   </script>
