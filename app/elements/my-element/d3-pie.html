@@ -36,11 +36,6 @@
               'iron-resize': '_onIronResize'
             },
             properties: {
-                dataName:{
-                    type: String,
-                    //value: 'Welcome!',
-                    //notify: true
-                },
                 dataArray:{
                     type: Array,
                     observer: '_dataArrayChanged'
@@ -66,8 +61,7 @@
                     value: 0
                   }
             },
-            _dataArrayChanged: function(newValue, oldValue){
-                console.log("QQ"+newValue); 
+            _dataArrayChanged: function(newValue, oldValue){ 
                 this.drawChart(newValue);
             },
             ready: function() {

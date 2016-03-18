@@ -12,7 +12,7 @@
       }
     </style>
     
-    <d3-pie data-name="[[dataName]]" data-array="[[dataArray]]"></d3-pie>
+    <d3-pie data-array="[[dataArray]]"></d3-pie>
   </template>
 
   <script>
@@ -33,10 +33,7 @@
         behaviors: [
             Polymer.IronResizableBehavior
         ],
-        doStuff: function(data) {
-            //Data is usable here
-            
-            //this.dataArray = data;
+        setArray: function(data) {
             this.set("dataArray", data);
             console.log(this.dataArray);
         },
@@ -51,7 +48,7 @@
             });
         },  
         ready: function() {
-            this.parseData("../../data/"+this.dataName, this.doStuff.bind(this));
+            this.parseData("../../data/"+this.dataName, this.setArray.bind(this));
             console.log("wrapper ready:"+this.dataArray);
         },
         attached: function(){
