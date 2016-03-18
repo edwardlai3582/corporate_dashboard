@@ -38,7 +38,8 @@
             properties: {
                 dataArray:{
                     type: Array,
-                    observer: '_dataArrayChanged'
+                    //observer: '_dataArrayChanged',
+                    notify: true
                 },
                 color:{
                     type: Object,
@@ -61,7 +62,14 @@
                     value: 0
                   }
             },
+             observers: [
+                '_updateDataArrayItems(dataArray.*)'
+            ],
+            _updateDataArrayItems : function(newValue, oldValue) {
+                this.drawChart(this.dataArray);
+            },
             _dataArrayChanged: function(newValue, oldValue){ 
+                console.log("CHANGED:"+newValue);
                 this.drawChart(newValue);
             },
             ready: function() {
@@ -79,7 +87,7 @@
                  var radius = Math.min(width, height) / 2;
 
               this.color = d3.scale.ordinal()
-                  .range(["green", "orange", "blue", "red"]);
+                  .range(["green", "orange", "blue", "red", "teal"]);
 
               this.arc = d3.svg.arc()
                   .outerRadius(radius - 10)

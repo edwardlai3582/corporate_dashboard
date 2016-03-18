@@ -11,8 +11,7 @@
         width:100%;  
       }
     </style>
-    
-    <d3-pie data-array="[[dataArray]]"></d3-pie>
+    <d3-pie data-array="{{dataArray}}"></d3-pie>
   </template>
 
   <script>
@@ -36,6 +35,16 @@
         setArray: function(data) {
             this.set("dataArray", data);
             console.log(this.dataArray);
+            ///////////////////////////////
+            var tempObj={};
+            tempObj.amount=333;
+            tempObj.id=5;
+            tempObj.type="QQQ";
+            var qq = function () {
+                this.push("dataArray", tempObj); 
+                console.log("qq");
+            };
+            setTimeout(qq.bind(this), 3000);
         },
         parseData: function(url, callBack) {
             Papa.parse(url, {
