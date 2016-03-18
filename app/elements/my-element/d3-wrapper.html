@@ -12,7 +12,7 @@
       }
     </style>
     
-    <d3-pie data-name="[[dataName]]"></d3-pie>
+    <d3-pie data-name="[[dataName]]" data-array="[[dataArray]]"></d3-pie>
   </template>
 
   <script>
@@ -23,10 +23,41 @@
         is: 'd3-wrapper',
 
         properties: {
+            dataArray:{
+                type: Array,
+            },
+            dataName:{
+                type: String,
+            }
         },
         behaviors: [
             Polymer.IronResizableBehavior
-        ]  
+        ],
+        doStuff: function(data) {
+            //Data is usable here
+            
+            //this.dataArray = data;
+            this.set("dataArray", data);
+            console.log(this.dataArray);
+        },
+        parseData: function(url, callBack) {
+            Papa.parse(url, {
+                header: true,
+                dynamicTyping: true,
+                download: true,
+                complete: function(results) {
+                    callBack(results.data);
+                }
+            });
+        },  
+        ready: function() {
+            this.parseData("../../data/"+this.dataName, this.doStuff.bind(this));
+            console.log("wrapper ready:"+this.dataArray);
+        },
+        attached: function(){
+            console.log("wrapper attached:"+this.dataArray);    
+        }  
+          
       });
     })();
   </script>

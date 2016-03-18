@@ -41,6 +41,10 @@
                     //value: 'Welcome!',
                     //notify: true
                 },
+                dataArray:{
+                    type: Array,
+                    observer: '_dataArrayChanged'
+                },
                 color:{
                     type: Object,
                 },
@@ -62,22 +66,17 @@
                     value: 0
                   }
             },
-            
+            _dataArrayChanged: function(newValue, oldValue){
+                console.log("QQ"+newValue); 
+                this.drawChart(newValue);
+            },
             ready: function() {
-                //console.log(this.dataName);
-                //////////////////////////
-                this.setD3(500, 500);              
+                console.log("pie ready:");
+                this.setD3(500, 500);
             },
             
             attached: function(){
                 this.async(this.notifyResize, 1);
-                /////////////////
-                var me = this;
-                me.url="../../data/"+this.dataName;    
-                d3.csv(me.url, function (error, data) {
-                    me.data = data;
-                    me.drawChart();
-                });     
             },
             
             setD3: function(width, height){
@@ -103,9 +102,9 @@
                   .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");      
             },
             
-            drawChart: function () {
+            drawChart: function (data) {
               var me = this;
-
+              me.data=data;
               me.data.forEach(function(d) {
                 d.amount = +d.amount;
               });
