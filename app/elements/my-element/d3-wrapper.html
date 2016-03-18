@@ -57,7 +57,8 @@
             });
         },  
         ready: function() {
-            this.parseData("../../data/"+this.dataName, this.setArray.bind(this));
+            var dataPath = "../../data/"+this.dataName;
+            this.parseData(dataPath, this.setArray.bind(this));
             console.log("wrapper ready:"+this.dataArray);
         },
         attached: function(){
