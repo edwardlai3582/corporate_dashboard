@@ -1,6 +1,6 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">  
- 
+<link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 
 <dom-module id="d3-test">
     <template>
@@ -24,12 +24,17 @@
             }
         </style>
         
-        <svg id="svg"></svg>
+        <svg id="svg" viewBox="0 0 500 500" perserveAspectRatio="xMinYMid"></svg>
     </template>
     <script>
         Polymer({
             is: 'd3-test',
-
+            behaviors: [
+              Polymer.IronResizableBehavior
+            ],
+            listeners: {
+              'iron-resize': '_onIronResize'
+            },
             properties: {
                 dataName:{
                     type: String,
@@ -48,6 +53,14 @@
                 svg:{
                     type: Object,
                 },
+                  x: {
+                    type: Number,
+                    value: 0
+                  },
+                  y: {
+                    type: Number,
+                    value: 0
+                  }
             },
             
             ready: function() {
@@ -57,12 +70,14 @@
             },
             
             attached: function(){
+                this.async(this.notifyResize, 1);
+                /////////////////
                 var me = this;
-              me.url="../../data/"+this.dataName;    
-              d3.csv(me.url, function (error, data) {
-                me.data = data;
-                me.drawChart();
-              });     
+                me.url="../../data/"+this.dataName;    
+                d3.csv(me.url, function (error, data) {
+                    me.data = data;
+                    me.drawChart();
+                });     
             },
             
             setD3: function(width, height){
@@ -82,8 +97,8 @@
                   .value(function(d) { return d.amount; });
 
               this.svg = d3.select(this.$.svg)
-                  .attr("width", width)
-                  .attr("height", height)
+                  //.attr("width", width)
+                  //.attr("height", height)
                 .append("g")
                   .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");      
             },
@@ -117,7 +132,31 @@
               }
             }
             */
-
+            get parent() {
+              if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+                return this.parentNode.host;
+              }
+              return this.parentNode;
+            },
+            _onIronResize: function() {
+              var x = this.x = Math.floor(this.parent.offsetWidth );
+              var y = this.y = Math.floor(this.parent.offsetHeight );
+              console.log("x="+x+", y="+y);    
+              //this.translate3d(x + 'px', y + 'px', 0);
+             /*    
+              this.svg.selectAll("*").remove();
+              this.setD3(x,x);
+              /////////////////
+                var me = this;
+                me.url="../../data/"+this.dataName;    
+                d3.csv(me.url, function (error, data) {
+                    me.data = data;
+                    me.drawChart();
+                }); 
+             */
+                 this.svg.attr("width", x);
+                this.svg.attr("height", x);
+            }
         });
     </script>
 </dom-module>

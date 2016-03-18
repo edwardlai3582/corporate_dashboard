@@ -1,0 +1,33 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="./d3-test.html">
+
+<dom-module id="d3-wrapper">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        width:100%;  
+      }
+    </style>
+    
+    <d3-test data-name="data.csv"></d3-test>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'd3-wrapper',
+
+        properties: {
+        },
+        behaviors: [
+            Polymer.IronResizableBehavior
+        ]  
+      });
+    })();
+  </script>
+</dom-module>
