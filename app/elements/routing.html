@@ -38,24 +38,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/', function() {
-      app.route = 'home';
+      app.route = 'geospatial';
     });
 
     page(app.baseUrl, function() {
-      app.route = 'home';
+      app.route = 'geospatial';
     });
 
-    page('/users', function() {
-      app.route = 'users';
+    page('/keymetrics', function() {
+      app.route = 'keymetrics';
     });
 
-    page('/users/:name', function(data) {
-      app.route = 'user-info';
-      app.params = data.params;
-    });
-
-    page('/contact', function() {
-      app.route = 'contact';
+    page('/data', function() {
+      app.route = 'data';
     });
 
     // 404

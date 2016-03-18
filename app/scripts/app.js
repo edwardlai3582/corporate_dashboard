@@ -20,7 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   if (window.location.port === '') {  // if production
     // Uncomment app.baseURL below and
     // set app.baseURL to '/your-pathname/' if running from folder in production
-    // app.baseUrl = '/polymer-starter-kit/';
+     //app.baseUrl = '/corporate_dashboard/';
   }
 
   app.displayInstalledToast = function() {
@@ -45,6 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // the appName in the middle-container and the bottom title in the bottom-container.
   // The appName is moved to top and shrunk on condensing. The bottom sub title
   // is shrunk to nothing on condensing.
+/*    
   window.addEventListener('paper-header-transform', function(e) {
     var appName = Polymer.dom(document).querySelector('#mainToolbar .app-name');
     var middleContainer = Polymer.dom(document).querySelector('#mainToolbar .middle-container');
@@ -68,7 +69,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // Scale middleContainer appName
     Polymer.Base.transform('scale(' + scaleMiddle + ') translateZ(0)', appName);
   });
-
+*/
   // Scroll page to top and expand header
   app.scrollPageToTop = function() {
     app.$.headerPanelMain.scrollToTop(true);
