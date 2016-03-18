@@ -1,7 +1,7 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="./d3-test.html">
+<link rel="import" href="./d3-pie.html">
 
 <dom-module id="d3-wrapper">
   <template>
@@ -12,7 +12,7 @@
       }
     </style>
     
-    <d3-test data-name="data.csv"></d3-test>
+    <d3-pie data-name="[[dataName]]"></d3-pie>
   </template>
 
   <script>

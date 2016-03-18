@@ -2,7 +2,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">  
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 
-<dom-module id="d3-test">
+<dom-module id="d3-pie">
     <template>
          <style>
             :host {
@@ -28,7 +28,7 @@
     </template>
     <script>
         Polymer({
-            is: 'd3-test',
+            is: 'd3-pie',
             behaviors: [
               Polymer.IronResizableBehavior
             ],
@@ -64,7 +64,7 @@
             },
             
             ready: function() {
-                console.log(this.dataName);
+                //console.log(this.dataName);
                 //////////////////////////
                 this.setD3(500, 500);              
             },
@@ -139,23 +139,11 @@
               return this.parentNode;
             },
             _onIronResize: function() {
-              var x = this.x = Math.floor(this.parent.offsetWidth );
-              var y = this.y = Math.floor(this.parent.offsetHeight );
-              console.log("x="+x+", y="+y);    
-              //this.translate3d(x + 'px', y + 'px', 0);
-             /*    
-              this.svg.selectAll("*").remove();
-              this.setD3(x,x);
-              /////////////////
-                var me = this;
-                me.url="../../data/"+this.dataName;    
-                d3.csv(me.url, function (error, data) {
-                    me.data = data;
-                    me.drawChart();
-                }); 
-             */
-                 this.svg.attr("width", x);
-                this.svg.attr("height", x);
+              this.x = Math.floor(this.parent.offsetWidth );
+              this.y = Math.floor(this.parent.offsetHeight );
+              //console.log("x="+x+", y="+y);    
+              this.svg.attr("width", this.x);
+              this.svg.attr("height", this.x);
             }
         });
     </script>
