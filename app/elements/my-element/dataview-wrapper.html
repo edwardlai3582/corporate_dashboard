@@ -1,0 +1,197 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="./epoch-time.html">
+
+<dom-module id="dataview-wrapper">
+  <template>
+    <style include="shared-styles">
+        :host {
+            display: block;
+            width:100%;  
+        }
+        #wrapper{
+            padding: 10px;
+        }
+        #sortWrapper{
+            width: 100%;
+        }
+        #sortWrapper paper-dropdown-menu{
+            float: right;
+        }
+        #tableWrapper{
+            overflow-x:auto;
+            clear: both;
+            width: 100%;
+            position: relative;
+            top: 20px;
+            padding-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even){background-color: #f2f2f2}
+        th {
+            background-color: #E68193;
+            color: white;
+        }
+    </style>
+    
+    <paper-material elevation="1">
+       <div id="wrapper">
+       <div id="sortWrapper">
+            <paper-dropdown-menu label="Sort by:">
+                <paper-listbox class="dropdown-content" selected="{{selectedsort}}" attr-for-selected="which">
+                    <paper-item which="submission_timestamp">submission timestamp</paper-item>
+                    <paper-item which="customer_name">customer name</paper-item>
+                    <paper-item which="customer_email">customer email address</paper-item>
+                    <paper-item which="status">status</paper-item>
+                    <paper-item which="closed_timestamp">closed timestamp</paper-item>
+                    <paper-item which="employee_name">employee name</paper-item>
+                </paper-listbox>
+            </paper-dropdown-menu>           
+       </div>
+
+        <!--<table-chart data-array="[[dataArray]]"></table-chart>-->
+        <div id="tableWrapper" >
+        <table style="width:100%">
+            <tr>
+                <th>submission timestamp</th>
+                <th>customer name</th>
+                <th>customer email</th> 
+                <th>description</th> 
+                <th>status</th> 
+                <th>closed timestamp</th> 
+                <th>employee name</th>  
+            </tr>
+            <template is="dom-repeat" id="dataTable" items="{{dataArray}}" sort="{{_sort(selectedsort)}}">
+                <tr>
+                    <td><epoch-time time-string="{{item.submission_timestamp}}"></epoch-time></td>
+                    <td>{{item.customer_name}}</td>
+                    <td>{{item.customer_email}}</td> 
+                    <td>{{item.description}}</td> 
+                    <td>{{item.status}}</td> 
+                    <td><epoch-time time-string="{{item.closed_timestamp}}"></epoch-time></td> 
+                    <td>{{item.employee_name}}</td>  
+                </tr>
+            </template>  
+        </table>
+        </div>
+        </div>    
+    </paper-material>
+  </template>
+
+  <script>
+
+      Polymer({
+        is: 'dataview-wrapper',
+
+        properties: {
+            dataArray:{
+                type: Array,  
+            },
+            dataName:{
+                type: String,
+            },
+            selectedsort:{
+                type: String,
+                value: "submission_timestamp"
+            }
+        },
+        behaviors: [
+            Polymer.IronResizableBehavior
+        ],
+        _sort: function(sortString){
+            switch(sortString) {
+                case "status":
+                    return function(a, b) {
+                        if (a[sortString] === b[sortString]){
+                            if (a["closed_timestamp"] === b["closed_timestamp"]) return 0;
+                            return a["closed_timestamp"] < b["closed_timestamp"] ? -1 : 1; 
+                        } 
+                        else if (a[sortString]==="open"&& b[sortString]==="closed"){
+                            return 1;    
+                        }
+                        else return -1;
+                    }; 
+                    break;   
+                case "closed_timestamp":
+                    return function(a, b) {
+                        if (a[sortString] === ""){
+                            if(b[sortString] === "") return 0;
+                            else return 1;
+                        }
+                        else if (b[sortString] === ""){
+                            return -1;    
+                        }
+                        else {
+                            if (a[sortString] === b[sortString]) return 0;
+                            return a[sortString] < b[sortString] ? -1 : 1;    
+                        }
+                    }; 
+                    break;   
+                default:
+                    return function(a, b) {
+                        if (a[sortString] === b[sortString]) return 0;
+                        return a[sortString] < b[sortString] ? -1 : 1;
+                    }; 
+            }
+  
+        },
+        setArray: function(data) {
+            this.set("dataArray", data);
+            console.log(this.dataArray);
+        },
+        parseData: function(url, callBack) {
+            var typejson=/\.json/i;
+            var typecsv=/\.csv/i;
+            if(url.match(typejson)){
+                //console.log("file type is JSON");
+                fetch(url).then(function(response) {
+                    if(response.ok) {
+                        response.text().then( function(myText){
+                            callBack(JSON.parse(myText));
+                        });
+                    }
+                    else{
+                        console.log('Network response was not ok.');
+                    }
+                })
+                .catch(function(error) {
+                  console.log('There has been a problem with your fetch operation: ' + error.message);
+                });
+            }
+            else if(url.match(typecsv)){
+                //console.log("file type is CSV");
+                Papa.parse(url, {
+                    header: true,
+                    dynamicTyping: false,
+                    download: true,
+                    complete: function(results) {
+                        callBack(results.data);
+                    }
+                });
+            }
+        },
+        
+        ready: function() {
+            var dataPath = "../../data/"+this.dataName;
+            this.parseData(dataPath, this.setArray.bind(this));         
+        },
+          
+        attached: function(){
+            //console.log("wrapper attached:"+this.dataArray);    
+        }  
+          
+      });
+  </script>
+</dom-module>

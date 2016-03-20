@@ -88,7 +88,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <a data-route="data" href="{{baseUrl}}data">
             <iron-icon icon="visibility"></iron-icon>
-            <span>Data</span>
+            <span>Issues</span>
           </a>
         </paper-menu>
       </paper-scroll-header-panel>
@@ -109,29 +109,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
             <section data-route="geospatial">
               <paper-material elevation="1">               
-                <d3-wrapper data-name="data.csv"></d3-wrapper>       
-               
+                <geo-wrapper></geo-wrapper>      
                 <p>Looking for more Web App layouts?</p>
-                
-              </paper-material>
-
-              <paper-material elevation="1">
-                <p>This is another card.</p>
               </paper-material>
             </section>
 
             <section data-route="keymetrics">
-              <paper-material elevation="1">
-                <h2 class="page-title">keymetrics</h2>
-                <p>This is the keymetric ssection</p>
-              </paper-material>
+                   <!--<keymetrics-wrapper data-name="small_key.json"></keymetrics-wrapper>-->
+                <keymetrics-wrapper data-name="KEY_METRICS.json"></keymetrics-wrapper>
             </section>
 
             <section data-route="data">
-              <paper-material elevation="1">
-                <h2 class="page-title">data</h2>
-                <p>This is the data section</p>
-              </paper-material>
+                <dataview-wrapper data-name="data_view.csv"></dataview-wrapper>
             </section>
           </iron-pages>
         </div>
