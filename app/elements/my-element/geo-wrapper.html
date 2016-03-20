@@ -11,12 +11,15 @@
         display: block;
         display: block;
         width:100%;  
-      }
+      }   
+        #geochartWrapper{
+        }
     </style>
-    
+<!-- A geospatial view, identifying the number of employees at various company locations. -->    
     <paper-material elevation="1">
-        <geo-chart data-array=""></geo-chart>
-        geo!    
+        <div id="geochartWrapper">
+            <geo-chart data-array="[[dataArray]]"></geo-chart>
+        </div>   
     </paper-material>
   </template>
 
@@ -26,11 +29,9 @@
         is: 'geo-wrapper',
 
         properties: {
-            paying_customerArray:{
-                type: Array,  
-            },
-            reported_issueArray:{
+            dataArray:{
                 type: Array,
+                value: function(){return [];}
             },
             dataName:{
                 type: String,
@@ -38,68 +39,25 @@
         },
         behaviors: [
             Polymer.IronResizableBehavior
-        ],
-        
-        splitArray: function(jsondata){
-            var customerResult= [];
-            var issueResult= [];
-            //[{"unix_date":1420502400,"paying_customer":322,"reported_issue":284}]
-            //result.push(Object.keys(jsondata[0]));
-            customerResult.push(["unix_date", "paying_customer"]);
-            issueResult.push(["unix_date", "reported_issue"]);
-          
-            for(var i=0; i<jsondata.length; i++){
-                var tempCustomerArray = [];
-                var tempIssueArray = [];            
-                tempCustomerArray.push(jsondata[i].unix_date);
-                tempCustomerArray.push(jsondata[i].paying_customer);
-                tempIssueArray.push(jsondata[i].unix_date);
-                tempIssueArray.push(jsondata[i].reported_issue);                
-                customerResult.push(tempCustomerArray);
-                issueResult.push(tempIssueArray);
-            }
-            return [customerResult, issueResult];
-        },  
+        ],  
         setArray: function(data) {
-            var splitArray=this.splitArray(data);
-            this.set("paying_customerArray", splitArray[0]);
-            this.set("reported_issueArray", splitArray[1]);
+            this.set("dataArray", data);
+            console.log(this.dataArray);
         },
         parseData: function(url, callBack) {
-            var typejson=/\.json/i;
-            var typecsv=/\.csv/i;
-            if(url.match(typejson)){
-                //console.log("file type is JSON");
-                fetch(url).then(function(response) {
-                    if(response.ok) {
-                        response.text().then( function(myText){
-                            callBack(JSON.parse(myText));
-                        });
-                    }
-                    else{
-                        console.log('Network response was not ok.');
-                    }
-                })
-                .catch(function(error) {
-                  console.log('There has been a problem with your fetch operation: ' + error.message);
-                });
-            }
-            else if(url.match(typecsv)){
-                //console.log("file type is CSV");
-                Papa.parse(url, {
-                    header: true,
-                    dynamicTyping: true,
-                    download: true,
-                    complete: function(results) {
-                        callBack(results.data);
-                    }
-                });
-            }
+            Papa.parse(url, {
+                header: false,
+                dynamicTyping: true,
+                download: true,
+                complete: function(results) {
+                    callBack(results.data);
+                }
+            });
         },
         
         ready: function() {
-            //var dataPath = "../../data/"+this.dataName;
-            //this.parseData(dataPath, this.setArray.bind(this));         
+            var dataPath = "../../data/"+this.dataName;
+            this.parseData(dataPath, this.setArray.bind(this));         
         },
           
         attached: function(){

@@ -107,11 +107,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Main Content -->
         <div class="content">
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
-            <section data-route="geospatial">
-              <paper-material elevation="1">               
-                <geo-wrapper></geo-wrapper>      
-                <p>Looking for more Web App layouts?</p>
-              </paper-material>
+            <section data-route="geospatial">              
+                <geo-wrapper data-name="geospatial.csv"></geo-wrapper>    
             </section>
 
             <section data-route="keymetrics">

@@ -149,29 +149,9 @@
         },
         setArray: function(data) {
             this.set("dataArray", data);
-            console.log(this.dataArray);
+            //console.log(this.dataArray);
         },
         parseData: function(url, callBack) {
-            var typejson=/\.json/i;
-            var typecsv=/\.csv/i;
-            if(url.match(typejson)){
-                //console.log("file type is JSON");
-                fetch(url).then(function(response) {
-                    if(response.ok) {
-                        response.text().then( function(myText){
-                            callBack(JSON.parse(myText));
-                        });
-                    }
-                    else{
-                        console.log('Network response was not ok.');
-                    }
-                })
-                .catch(function(error) {
-                  console.log('There has been a problem with your fetch operation: ' + error.message);
-                });
-            }
-            else if(url.match(typecsv)){
-                //console.log("file type is CSV");
                 Papa.parse(url, {
                     header: true,
                     dynamicTyping: false,
@@ -180,7 +160,6 @@
                         callBack(results.data);
                     }
                 });
-            }
         },
         
         ready: function() {
