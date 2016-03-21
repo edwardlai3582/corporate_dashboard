@@ -1,9 +1,13 @@
 
+
+<script src="../../scripts/papaparse.min.js"></script>
+
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="./epoch-time.html">
 
@@ -20,11 +24,16 @@
         #wrapper{
             padding: 10px;
         }
-        #sortWrapper{
+        #sort_filter_Wrapper{
             width: 100%;
         }
-        #sortWrapper paper-dropdown-menu{
+        #sort_filter_Wrapper paper-dropdown-menu{
             float: right;
+            margin-left: 10px;
+        }
+        #sort_filter_Wrapper paper-input{
+            float: right;
+            margin-right: 10px;            
         }
         #tableWrapper{
             overflow-x:auto;
@@ -51,7 +60,7 @@
     
     <paper-material elevation="1">
        <div id="wrapper">
-       <div id="sortWrapper">
+       <div id="sort_filter_Wrapper">
             <paper-dropdown-menu label="Sort by:">
                 <paper-listbox class="dropdown-content" selected="{{selectedsort}}" attr-for-selected="which">
                     <paper-item which="submission_timestamp">submission timestamp</paper-item>
@@ -61,7 +70,17 @@
                     <paper-item which="closed_timestamp">closed timestamp</paper-item>
                     <paper-item which="employee_name">employee name</paper-item>
                 </paper-listbox>
-            </paper-dropdown-menu>           
+            </paper-dropdown-menu> 
+            
+            <paper-dropdown-menu label="Filter:">
+                <paper-listbox class="dropdown-content" selected="{{selectedfilter}}" attr-for-selected="which">
+                    <paper-item which="">none</paper-item>
+                    <paper-item which="open">show open issues only</paper-item>
+                    <paper-item which="closed">show closed issues only</paper-item>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            
+            <paper-input label="Search name" value="{{searchName::input}}"></paper-input>                      
        </div>
 
         <!--<table-chart data-array="[[dataArray]]"></table-chart>-->
@@ -76,7 +95,7 @@
                 <th>closed timestamp</th> 
                 <th>employee name</th>  
             </tr>
-            <template is="dom-repeat" id="dataTable" items="{{dataArray}}" sort="{{_sort(selectedsort)}}">
+            <template is="dom-repeat" id="dataTable" items="{{dataArray}}" sort="{{_sort(selectedsort)}}" filter="{{_filter(selectedfilter, searchName)}}">
                 <tr>
                     <td><epoch-time time-string="{{item.submission_timestamp}}"></epoch-time></td>
                     <td>{{item.customer_name}}</td>
@@ -108,12 +127,57 @@
             selectedsort:{
                 type: String,
                 value: "submission_timestamp"
+            },
+            selectedfilter:{
+                type: String,
+                value: ""
+            },
+            searchName:{
+                type: String,
+                value: ""
             }
         },
           
         behaviors: [
             Polymer.IronResizableBehavior
         ],
+        
+        _filter: function(string,name) {
+            if(name===""){
+                if (!string) {
+                  // set filter to null to disable filtering
+                  return null;
+                } else {
+                  // return a filter function for the current search string
+                  string = string.toLowerCase();
+                  return function(data) {
+                    var status = data.status.toLowerCase();
+                    return (status===string);
+                  };
+                }                
+            }
+            else{
+                if (!string) {
+                  return function(data) {
+                    var status = data.status;
+                    var customer = data.customer_name.toLowerCase();
+                    var employee = data.employee_name.toLowerCase();  
+                    return ((customer.indexOf(name.toLowerCase()) != -1 ||
+                employee.indexOf(name.toLowerCase()) != -1));
+                  };
+                } else {
+                  // return a filter function for the current search string
+                  string = string.toLowerCase();
+                  return function(data) {
+                    var status = data.status;
+                    var customer = data.customer_name.toLowerCase();
+                    var employee = data.employee_name.toLowerCase();
+                    return (status===string && (customer.indexOf(name.toLowerCase()) != -1 ||
+                employee.indexOf(name.toLowerCase()) != -1));
+                  };
+                }                  
+            }
+          },
           
         _sort: function(sortString){
             switch(sortString) {
