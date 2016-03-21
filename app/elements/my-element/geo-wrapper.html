@@ -2,7 +2,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="./geo-chart.html">
+<link rel="import" href="./my-chart.html">
 
 <dom-module id="geo-wrapper">
   <template>
@@ -18,7 +18,8 @@
  
     <paper-material elevation="1">
         <div id="geochartWrapper">
-            <geo-chart data-array="[[dataArray]]"></geo-chart>
+            <!--<geo-chart data-array="[[dataArray]]"></geo-chart>-->
+            <my-chart type="geo" data-array="[[dataArray]]" options="[[options]]"></my-chart>
         </div>   
     </paper-material>
   </template>
@@ -35,15 +36,29 @@
             },
             dataName:{
                 type: String,
-            }
+            },
+            options:{
+                    type: Object,
+                    value: function(){
+                             return { 
+                                 region: 'US',
+                                 displayMode: 'regions',
+                                 resolution: 'provinces',
+                                 colorAxis: {colors: ['pink','#E68193', 'purple']},
+                                 backgroundColor: '#1087B5',
+                                 datalessRegionColor: 'black',
+                                 defaultColor: '#f5f5f5'
+                            };},
+                }
         },
         behaviors: [
             Polymer.IronResizableBehavior
         ],  
         setArray: function(data) {
             this.set("dataArray", data);
-            //console.log(this.dataArray);
-            setInterval(this.reSetDataArray.bind(this), 4000);
+            
+            // keeps update Arrays
+            setInterval(this.reSetDataArray.bind(this), 3000);
         },
         reSetDataArray:function (){
             var tempDataArray=[];

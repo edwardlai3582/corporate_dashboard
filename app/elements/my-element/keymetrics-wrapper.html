@@ -2,8 +2,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="./line-chart.html">
-<link rel="import" href="./bar-chart.html">
+<link rel="import" href="./my-chart.html">
 
 <dom-module id="keymetrics-wrapper">
   <template>
@@ -33,16 +32,16 @@
        </div>   
     </paper-material>
     <paper-material elevation="1">
-       <div class="dataTitle">
-           Number of paying customers
-       </div>       
-        <line-chart data-array="{{paying_customerArray}}"></line-chart>    
+        <div class="dataTitle">
+            Number of paying customers
+        </div>       
+        <my-chart type="line" data-array="[[paying_customerArray]]" options="[[options_line]]"></my-chart>    
     </paper-material>
     <paper-material elevation="1">
-       <div class="dataTitle">
+        <div class="dataTitle">
            Number of reported issues
-       </div>       
-        <bar-chart data-array="{{reported_issueArray}}"></bar-chart>   
+        </div>       
+        <my-chart type="column" data-array="[[reported_issueArray]]" options="[[options_column]]"></my-chart>
     </paper-material>
   </template>
 
@@ -65,7 +64,23 @@
             lastDateInData:{
                 type: Number,
                 value: 0
-            }
+            },
+            options_line:{
+                    type: Object,
+                    value: function(){
+                             return { 
+                                colors: ['#E68193'],
+                                legend: {position: 'none'}
+                            };},
+            },
+            options_column:{
+                    type: Object,
+                    value: function(){
+                             return { 
+                                colors: ['#38C181'],
+                                legend: {position: 'none'}
+                            };},
+            },
         },
         behaviors: [
             Polymer.IronResizableBehavior
@@ -74,8 +89,7 @@
         splitArray: function(jsondata){
             var customerResult= [];
             var issueResult= [];
-            //[{"unix_date":1420502400,"paying_customer":322,"reported_issue":284}]
-            //result.push(Object.keys(jsondata[0]));
+            
             customerResult.push(["unix_date", "paying_customer"]);
             issueResult.push(["unix_date", "reported_issue"]);
           
@@ -98,11 +112,12 @@
             var splitArray=this.splitArray(data);
             this.set("paying_customerArray", splitArray[0]);
             this.set("reported_issueArray", splitArray[1]);
-            setInterval(this.reSetDataArray.bind(this), 2000);
+            
+            // keeps update Arrays
+            setInterval(this.reSetDataArray.bind(this), 3000);
         },
         reSetDataArray:function (){
             var lastDate= this.lastDateInData+86400;
-            console.log(this.epoch(lastDate));
             
             var newCustomerArray = this.paying_customerArray.slice(0);
             newCustomerArray.push([this.epoch(lastDate), Math.floor(Math.random() * (500 - 10 + 1)) + 10]);
@@ -113,7 +128,7 @@
             this.set("reported_issueArray", newIssueArray);
             
             this.set("lastDateInData", lastDate);
-            console.log("pushed"+this.paying_customerArray.length);
+            console.log("key matrics data changed");
         },  
         parseData: function(url, callBack) {
             fetch(url).then(function(response) {

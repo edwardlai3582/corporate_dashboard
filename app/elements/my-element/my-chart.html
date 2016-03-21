@@ -1,0 +1,75 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">  
+<link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+<link rel="stylesheet" href="../../bower_components/google-chart/google-chart.css">
+
+<dom-module id="my-chart">
+    <template>
+         <style>
+            :host {
+                display: block;
+                width: 100%;
+            }
+            google-chart {
+                width: 100%;
+            }                
+        </style>
+
+     <google-chart type="{{type}}" data="{{dataArray}}" options="{{options}}">
+  </google-chart>
+
+   
+    </template>
+    <script>
+        Polymer({
+            is: 'my-chart',
+            behaviors: [
+              Polymer.IronResizableBehavior
+            ],
+            listeners: {
+              'iron-resize': '_onIronResize'
+            },
+            properties: {
+                dataArray:{
+                    type: Array,
+                    value: function(){return [];},
+                },
+                type:{
+                    type: String,
+                },
+                options:{
+                    type: Object,
+                },
+                chartdone:{
+                    type: Boolean,
+                    value: true,
+                }
+            },            
+            attached: function(){
+                this.async(this.notifyResize, 1);
+            },
+            get parent() {
+              if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+                return this.parentNode.host;
+              }
+              return this.parentNode;
+            },
+            _onIronResize: function() {
+                this.$$('google-chart').drawChart();
+                /*
+                if(this.chartdone){
+                    this.chartdone= false;
+                    setTimeout(this.redraw.bind(this),300);
+                } 
+                */
+            },
+            /* //for geo
+            redraw: function(){
+                this.$$('google-chart').drawChart(); 
+                this.chartdone = true;    
+            }
+            */
+        });
+    </script>
+</dom-module>
