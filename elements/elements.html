@@ -18991,7 +18991,9 @@ if (!window.Promise) {
         },
           
         ready: function() {
-            var dataPath = "../../data/"+this.dataName;
+            //var dataPath = "../../data/"+this.dataName;
+            var dataPath = "./data/"+this.dataName;
+            
             this.parseData(dataPath, this.setArray.bind(this));         
         }, 
           
@@ -19145,7 +19147,9 @@ if (!window.Promise) {
         },
         
         ready: function() {
-            var dataPath = "../../data/"+this.dataName;
+            //var dataPath = "../../data/"+this.dataName;
+            var dataPath = "./data/"+this.dataName;
+            
             this.parseData(dataPath, this.setArray.bind(this));         
         },
           
