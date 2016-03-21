@@ -24,12 +24,15 @@
     <script>
         Polymer({
             is: 'my-chart',
+            
             behaviors: [
               Polymer.IronResizableBehavior
             ],
+            
             listeners: {
               'iron-resize': '_onIronResize'
             },
+            
             properties: {
                 dataArray:{
                     type: Array,
@@ -45,16 +48,19 @@
                     type: Boolean,
                     value: true,
                 }
-            },            
+            },  
+            
             attached: function(){
                 this.async(this.notifyResize, 1);
             },
+            
             get parent() {
               if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
                 return this.parentNode.host;
               }
               return this.parentNode;
             },
+            
             _onIronResize: function() {
                 this.$$('google-chart').drawChart();
                 /*

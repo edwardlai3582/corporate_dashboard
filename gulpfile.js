@@ -124,7 +124,7 @@ gulp.task('images', function() {
 // Copy all files at the root level (app)
 gulp.task('copy', function() {
   var app = gulp.src([
-    'app/*',
+    'app/*',  
     '!app/test',
     '!app/elements',
     '!app/bower_components',
@@ -140,7 +140,9 @@ gulp.task('copy', function() {
     'app/bower_components/{webcomponentsjs,platinum-sw,sw-toolbox,promise-polyfill}/**/*'
   ]).pipe(gulp.dest(dist('bower_components')));
 
-  return merge(app, bower)
+  var data = gulp.src(['app/data/*']).pipe(gulp.dest(dist('data')));    
+    
+  return merge(app, bower, data)
     .pipe($.size({
       title: 'copy'
     }));

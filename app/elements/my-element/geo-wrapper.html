@@ -18,7 +18,6 @@
  
     <paper-material elevation="1">
         <div id="geochartWrapper">
-            <!--<geo-chart data-array="[[dataArray]]"></geo-chart>-->
             <my-chart type="geo" data-array="[[dataArray]]" options="[[options]]"></my-chart>
         </div>   
     </paper-material>
@@ -51,15 +50,18 @@
                             };},
                 }
         },
+          
         behaviors: [
             Polymer.IronResizableBehavior
         ],  
+          
         setArray: function(data) {
             this.set("dataArray", data);
             
             // keeps update Arrays
             setInterval(this.reSetDataArray.bind(this), 3000);
         },
+          
         reSetDataArray:function (){
             var tempDataArray=[];
             var tempArray=[];
@@ -77,6 +79,7 @@
             this.set('dataArray', tempDataArray);
             console.log("geo data changed");
         },
+          
         parseData: function(url, callBack) {
             Papa.parse(url, {
                 header: false,
@@ -87,6 +90,7 @@
                 }
             });
         },
+          
         ready: function() {
             var dataPath = "../../data/"+this.dataName;
             this.parseData(dataPath, this.setArray.bind(this));         

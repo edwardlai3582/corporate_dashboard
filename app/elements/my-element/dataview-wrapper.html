@@ -110,9 +110,11 @@
                 value: "submission_timestamp"
             }
         },
+          
         behaviors: [
             Polymer.IronResizableBehavior
         ],
+          
         _sort: function(sortString){
             switch(sortString) {
                 case "status":
@@ -150,10 +152,12 @@
             }
   
         },
+          
         setArray: function(data) {
             this.set("dataArray", data);
             //console.log(this.dataArray);
         },
+          
         parseData: function(url, callBack) {
                 Papa.parse(url, {
                     header: true,
@@ -168,11 +172,7 @@
         ready: function() {
             var dataPath = "../../data/"+this.dataName;
             this.parseData(dataPath, this.setArray.bind(this));         
-        },
-          
-        attached: function(){
-            //console.log("wrapper attached:"+this.dataArray);    
-        }  
+        }, 
           
       });
   </script>

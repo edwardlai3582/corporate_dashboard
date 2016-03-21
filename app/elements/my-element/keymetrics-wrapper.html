@@ -82,6 +82,7 @@
                             };},
             },
         },
+          
         behaviors: [
             Polymer.IronResizableBehavior
         ],
@@ -107,7 +108,8 @@
                 issueResult.push(tempIssueArray);
             }
             return [customerResult, issueResult];
-        },  
+        }, 
+          
         setArray: function(data) {
             var splitArray=this.splitArray(data);
             this.set("paying_customerArray", splitArray[0]);
@@ -116,6 +118,7 @@
             // keeps update Arrays
             setInterval(this.reSetDataArray.bind(this), 3000);
         },
+          
         reSetDataArray:function (){
             var lastDate= this.lastDateInData+86400;
             
@@ -129,7 +132,8 @@
             
             this.set("lastDateInData", lastDate);
             console.log("key matrics data changed");
-        },  
+        },
+          
         parseData: function(url, callBack) {
             fetch(url).then(function(response) {
                 if(response.ok) {
@@ -151,14 +155,12 @@
             this.parseData(dataPath, this.setArray.bind(this));         
         },
           
-        attached: function(){
-            //console.log("wrapper attached:"+this.dataArray);    
-        },
         epoch: function(epoch){
          var date = new Date(0);
             date.setUTCSeconds(epoch);
             return date;
         },
+          
         arrayLength: function(length){
             return length-1;
         }  
