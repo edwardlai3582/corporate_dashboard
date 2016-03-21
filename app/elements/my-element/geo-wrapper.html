@@ -15,7 +15,7 @@
         #geochartWrapper{
         }
     </style>
-<!-- A geospatial view, identifying the number of employees at various company locations. -->    
+ 
     <paper-material elevation="1">
         <div id="geochartWrapper">
             <geo-chart data-array="[[dataArray]]"></geo-chart>
@@ -43,6 +43,24 @@
         setArray: function(data) {
             this.set("dataArray", data);
             //console.log(this.dataArray);
+            setInterval(this.reSetDataArray.bind(this), 4000);
+        },
+        reSetDataArray:function (){
+            var tempDataArray=[];
+            var tempArray=[];
+            for(var i=0; i<this.dataArray[0].length; i++){
+                tempArray.push(this.dataArray[0][i]);
+            }
+            tempDataArray.push(tempArray);
+            
+            for(var i=1; i<this.dataArray.length; i++){
+                tempArray=[];
+                tempArray.push(this.dataArray[i][0]);
+                tempArray.push(Math.floor(Math.random() * (7000 - 500 + 1)) + 500);
+                tempDataArray.push(tempArray);
+            }
+            this.set('dataArray', tempDataArray);
+            console.log("geo data changed");
         },
         parseData: function(url, callBack) {
             Papa.parse(url, {
@@ -54,15 +72,10 @@
                 }
             });
         },
-        
         ready: function() {
             var dataPath = "../../data/"+this.dataName;
             this.parseData(dataPath, this.setArray.bind(this));         
-        },
-          
-        attached: function(){
-            //console.log("wrapper attached:"+this.dataArray);    
-        }  
+        }, 
           
       });
   </script>

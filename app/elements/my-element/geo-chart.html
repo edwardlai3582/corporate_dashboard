@@ -16,7 +16,7 @@
             }                
         </style>
 
-     <google-chart type="geo" id="geo_chart" data="{{dataArray}}" options="{{options}}">
+     <google-chart type="geo" data="{{dataArray}}" options="{{options}}">
   </google-chart>
 
    
@@ -34,7 +34,6 @@
                 dataArray:{
                     type: Array,
                     value: function(){return [];},
-                    //observer: '_dataArrayChanged',
                 },
                 options:{
                     type: Object,
@@ -53,30 +52,7 @@
                     type: Boolean,
                     value: true,
                 }
-            },
-             observers: [
-                '_updateDataArrayItems(dataArray.*)'
-            ],
-            _updateDataArrayItems : function(newValue, oldValue) {
-                //this.drawChart(this.dataArray);
-                //console.log("===============");
-                //console.log(newValue);
-                //if(newValue.value.length!==0){
-                    //this.setD3(800, 300);
-                    //this.drawChart(newValue);
-                //}
-                //this.drawChart(newValue);
-            },
-            _dataArrayChanged: function(newValue, oldValue){ 
-                //console.log("CHANGED:"+newValue);
-                //this.drawChart(this.dataArray);
-            },
-            ready: function() {
-                //console.log("line ready:");
-                //this.setD3(800, 300);
-                ///this.drawChart(this.dataArray);
-            },
-            
+            },            
             attached: function(){
                 this.async(this.notifyResize, 1);
             },
@@ -93,7 +69,7 @@
                 }  
             },
             redraw: function(){
-                document.getElementById('geo_chart').drawChart(); 
+                this.$$('google-chart').drawChart(); 
                 this.chartdone = true;    
             }
         });

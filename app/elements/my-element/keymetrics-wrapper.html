@@ -53,13 +53,18 @@
 
         properties: {
             paying_customerArray:{
-                type: Array,  
+                type: Array,
+                notify: true
             },
             reported_issueArray:{
                 type: Array,
             },
             dataName:{
                 type: String,
+            },
+            lastDateInData:{
+                type: Number,
+                value: 0
             }
         },
         behaviors: [
@@ -76,7 +81,10 @@
           
             for(var i=0; i<jsondata.length; i++){
                 var tempCustomerArray = [];
-                var tempIssueArray = [];            
+                var tempIssueArray = [];
+                if(i===jsondata.length-1){
+                    this.set('lastDateInData', jsondata[i].unix_date);
+                }
                 tempCustomerArray.push(this.epoch(jsondata[i].unix_date));
                 tempCustomerArray.push(jsondata[i].paying_customer);
                 tempIssueArray.push(this.epoch(jsondata[i].unix_date));
@@ -90,7 +98,23 @@
             var splitArray=this.splitArray(data);
             this.set("paying_customerArray", splitArray[0]);
             this.set("reported_issueArray", splitArray[1]);
+            setInterval(this.reSetDataArray.bind(this), 2000);
         },
+        reSetDataArray:function (){
+            var lastDate= this.lastDateInData+86400;
+            console.log(this.epoch(lastDate));
+            
+            var newCustomerArray = this.paying_customerArray.slice(0);
+            newCustomerArray.push([this.epoch(lastDate), Math.floor(Math.random() * (500 - 10 + 1)) + 10]);
+            this.set("paying_customerArray", newCustomerArray);
+            
+            var newIssueArray = this.reported_issueArray.slice(0);
+            newIssueArray.push([this.epoch(lastDate), Math.floor(Math.random() * (400 - 10 + 1)) + 10]);
+            this.set("reported_issueArray", newIssueArray);
+            
+            this.set("lastDateInData", lastDate);
+            console.log("pushed"+this.paying_customerArray.length);
+        },  
         parseData: function(url, callBack) {
             fetch(url).then(function(response) {
                 if(response.ok) {

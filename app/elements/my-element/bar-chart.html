@@ -10,14 +10,13 @@
             :host {
                 display: block;
                 width: 100%;
-                /*height: 400px;*/
             }
             google-chart {
               width: 100%;   
             }  
         </style>
         
-        <google-chart id="bar_chart" type="column" data="[[dataArray]]"  options="{{options}}">
+        <google-chart type="column" data="[[dataArray]]"  options="{{options}}">
         </google-chart>
     </template>
     <script>
@@ -33,8 +32,6 @@
                 dataArray:{
                     type: Array,
                     value: function(){return [];},
-                    //observer: '_dataArrayChanged',
-                    notify: true
                 },
                 options:{
                     type: Object,
@@ -44,36 +41,6 @@
                                 legend: {position: 'none'}
                             };},
                 },
-                x: {
-                    type: Number,
-                    value: 0
-                },
-                y: {
-                    type: Number,
-                    value: 0
-                }
-            },
-            observers: [
-                '_updateDataArrayItems(dataArray.*)'
-            ],
-            _updateDataArrayItems : function(newValue, oldValue) {
-                //this.drawChart(this.dataArray);
-                //console.log("===============");
-                //console.log(newValue);
-                if(newValue.value.length!==0){
-                    //this.setD3(800, 300);
-                    //this.drawChart(newValue);
-                }
-                //this.drawChart(newValue);
-            },
-            _dataArrayChanged: function(newValue, oldValue){ 
-                //console.log("CHANGED:"+newValue);
-                //this.drawChart(this.dataArray);
-            },
-            ready: function() {
-                //console.log("bar ready:");
-                //this.setD3(800, 300);
-                ///this.drawChart(this.dataArray);
             },
             
             attached: function(){
@@ -86,7 +53,7 @@
               return this.parentNode;
             },
             _onIronResize: function() {
-              document.getElementById('bar_chart').drawChart();
+                this.$$('google-chart').drawChart();
             }
         });
     </script>
